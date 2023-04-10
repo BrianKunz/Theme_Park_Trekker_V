@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 
-class TripService {
+class CommentService {
   private instance: AxiosInstance;
   constructor() {
     this.instance = axios.create({
@@ -13,20 +13,20 @@ class TripService {
   }
 
   async getAll() {
-    return await this.instance.get("/trips/");
+    return await this.instance.get("/comments/");
   }
   async getOne(id: string) {
-    return await this.instance.get(`/trips/${id}`);
+    return await this.instance.get(`/comments/${id}`);
   }
-  async create(trip: Trip) {
-    return await this.instance.post("/trips", { ...trip });
+  async create(comment: Comment) {
+    return await this.instance.post("/comments", { ...comment });
   }
-  async update(id: string, trip: Trip) {
-    return await this.instance.put(`/trips/${id}`, { ...trip });
+  async update(id: string, comment: Comment) {
+    return await this.instance.put(`/comments/${id}`, { ...comment });
   }
   async delete(id: string) {
-    return await this.instance.delete(`/trips/${id}`);
+    return await this.instance.delete(`/comments/${id}`);
   }
 }
 
-export const tripService = new TripService();
+export const commentService = new CommentService();
