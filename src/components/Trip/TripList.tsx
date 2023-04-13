@@ -14,9 +14,13 @@ export default function TripList() {
     <div>
       <h1>Trips</h1>
       <CreateTrip />
-      {trips.map((trip) => {
-        return <Trip key={trip.id} trip={trip} />;
-      })}
+      {trips.length > 0 ? (
+        trips.map((trip) => {
+          return <Trip key={trip.id} trip={trip} />;
+        })
+      ) : (
+        <p>No trips planned yet!</p>
+      )}
     </div>
   );
 }

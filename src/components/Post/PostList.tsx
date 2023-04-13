@@ -4,7 +4,7 @@ import { Post } from "./Post";
 import CreatePost from "./CreatePost/CreatePost";
 
 export default function PostList() {
-  const { posts, getAllPosts } = usePostStore;
+  const { posts, getAllPosts } = usePostStore();
 
   useEffect(() => {
     getAllPosts();
