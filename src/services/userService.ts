@@ -12,7 +12,7 @@ class UserService {
     return data;
   }
 
-  async signUp(user: User) {
+  async create(user: User) {
     return await this.instance.post("/signup");
   }
   async login(user: User) {

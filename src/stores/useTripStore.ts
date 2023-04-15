@@ -34,6 +34,7 @@ export const useTripStore = create<TripStore>((set, get) => ({
   updateTrip: async (trip) => {
     const { getAllTrips } = get();
     try {
+      //@ts-ignore
       await tripService.update(trip);
       await getAllTrips();
     } catch (error) {

@@ -39,14 +39,15 @@ export const Trip: React.FC<Props> = ({
     if (!id) {
       return;
     }
+    //@ts-ignore
     deleteTrip(id);
   };
 
   return (
     <div>
       <h4>{title}</h4>
-      <p>{start_date}</p>
-      <p>{end_date}</p>
+      {/* <p>{start_date}</p>
+      <p>{end_date}</p> */}
       <p>{flight}</p>
     </div>
   );
