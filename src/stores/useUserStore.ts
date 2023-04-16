@@ -4,6 +4,7 @@ import { userService } from "../services/userService";
 interface UserStore {
   users: User[];
   createNewUser: (user: User) => Promise<void>;
+  login: (user: User) => Promise<void>;
 }
 
 export const useUserStore = create<UserStore>(() => ({
@@ -12,6 +13,14 @@ export const useUserStore = create<UserStore>(() => ({
     try {
       console.log(user);
       await userService.create(user);
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  login: async (user) => {
+    try {
+      console.log(user);
+      await userService.login(user);
     } catch (error) {
       console.error(error);
     }

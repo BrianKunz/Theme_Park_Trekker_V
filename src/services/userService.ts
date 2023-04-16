@@ -13,11 +13,10 @@ class UserService {
   }
 
   async create(user: User) {
-    console.log(user);
     return await this.instance.post("/", user);
   }
   async login(user: User) {
-    return await this.instance.post("/login");
+    return await this.instance.post("/login", user);
   }
 }
 
