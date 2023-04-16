@@ -1,5 +1,10 @@
 import { useState } from "react";
 import { usePostStore } from "../../../stores/usePostStore";
+import { v4 as uuidv4 } from "uuid";
+
+interface Props {
+  username: string;
+}
 
 export function useCreatePost() {
   const [formInput, setFormInput] = useState("");
@@ -17,9 +22,13 @@ export function useCreatePost() {
     try {
       setLoading(true);
       await createNewPost({
+        id: uuidv4(),
+        username: "placeholder",
+        time: new Date(),
         title: formInput,
         image: formInput,
         description: formInput,
+        comments: [],
       });
       setFormInput("");
     } catch (error) {
