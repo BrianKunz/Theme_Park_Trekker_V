@@ -3,7 +3,7 @@ interface User {
   username: string;
   email: string;
   password: string;
-  admin: boolean;
+  admin?: boolean;
 }
 
 interface Post {

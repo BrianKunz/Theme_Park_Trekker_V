@@ -3,13 +3,25 @@ import { useUserStore } from "../../../stores/useUserStore";
 import { v4 as uuidv4 } from "uuid";
 
 export function useCreateUser() {
-  const [formInput, setFormInput] = useState("");
+  interface FormInputs {
+    email: string;
+    username: string;
+    password: string;
+  }
+  const [formInputs, setFormInputs] = useState<FormInputs>({
+    email: "",
+    username: "",
+    password: "",
+  });
   const [loading, setLoading] = useState(false);
   const { createNewUser } = useUserStore();
   const handleFormChange: React.ChangeEventHandler<HTMLInputElement> = ({
-    target: { value },
+    target: { name, value },
   }) => {
-    setFormInput(value);
+    setFormInputs((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
   const handleSubmit = async () => {
     if (loading) {
@@ -17,14 +29,19 @@ export function useCreateUser() {
     }
     try {
       setLoading(true);
+      console.log("Form inputs: ", formInputs);
       await createNewUser({
         id: uuidv4(),
-        username: formInput,
-        email: formInput,
-        password: formInput,
+        username: formInputs.username,
+        email: formInputs.email,
+        password: formInputs.password,
         admin: false,
       });
-      setFormInput("");
+      setFormInputs({
+        email: "",
+        username: "",
+        password: "",
+      });
     } catch (error) {
       console.error(error);
     } finally {
@@ -35,6 +52,6 @@ export function useCreateUser() {
   return {
     handleSubmit,
     handleFormChange,
-    formInput,
+    formInputs,
   };
 }

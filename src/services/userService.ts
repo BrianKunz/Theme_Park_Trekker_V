@@ -4,7 +4,7 @@ class UserService {
   private instance: AxiosInstance;
   constructor() {
     this.instance = axios.create({
-      baseURL: "http://localhost:3000",
+      baseURL: "http://localhost:3001/users",
     });
     this.instance.interceptors.response.use(this.responseInterceptor);
   }
@@ -13,7 +13,8 @@ class UserService {
   }
 
   async create(user: User) {
-    return await this.instance.post("/signup");
+    console.log(user);
+    return await this.instance.post("/", user);
   }
   async login(user: User) {
     return await this.instance.post("/login");
