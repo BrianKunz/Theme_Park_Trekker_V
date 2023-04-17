@@ -1,5 +1,5 @@
 import "./App.css";
-// import TripList from "./components/Trip/TripList";
+import TripList from "./components/Trip/TripList";
 // import PostList from "./components/Post/PostList";
 import CreateUser from "./components/User/CreateUser/CreateUser";
 import LoginUser from "./components/User/LoginUser/LoginUser";
@@ -9,8 +9,8 @@ import LoginUser from "./components/User/LoginUser/LoginUser";
 function App() {
   return (
     <div className="App">
-      {/* <TripList />
-      <PostList /> */}
+      <TripList />
+      {/* <PostList /> */}
       <CreateUser />
       <LoginUser />
     </div>

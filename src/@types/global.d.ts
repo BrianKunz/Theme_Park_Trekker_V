@@ -4,32 +4,39 @@ interface User {
   email?: string;
   password: string;
   admin?: boolean;
+  trips?: Trip[];
+  posts?: Post[];
+  comments?: Comment[];
 }
 
 interface Post {
-  id: string;
-  username: string;
+  id?: string;
   title: string;
-  image: string;
+  image?: string;
   description: string;
-  time: Date;
+  created: Date;
   comments: Comment[];
+  user?: User;
 }
 
 interface Comment {
-  id: string;
-  username: string;
+  id?: string;
   time: Date;
   body: string;
   post: Post;
+  user?: User;
 }
 
 interface Trip {
-  id: string;
-  username: string;
+  id?: string;
   date: Date;
   title: string;
   start_date: Date;
   end_date: Date;
-  flight: string;
+  flight?: string;
+  user?: User;
+}
+
+interface CustomSessionData extends SessionData {
+  user?: User;
 }

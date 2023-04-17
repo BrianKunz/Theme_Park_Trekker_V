@@ -6,43 +6,45 @@ interface Props {
 }
 
 export const Post: React.FC<Props> = ({
-  post: { id, username, title, image, description, time, comments },
+  post: { id, title, image, description, created, comments },
 }) => {
-  // const {updatePost, deletePost} = usePostStore();
-  // const [loading, setLoading] = useState(false);
+  const { updatePost, deletePost } = usePostStore();
+  const [loading, setLoading] = useState(false);
 
-  // const handleChange: React.ChangeEventHandler<HTMLInputElement> = async ({
-  //     target: {value},
-  // }) => {
-  //     console.log({value});
-  //     if (loading) {
-  //         return;
-  //     }
-  //     setLoading(true);
-  //     try {
-  //         await updatePost({
-  //             id,
-  //             title,
-  //             image,
-  //             description,
-  //             comments
-  //         });
-  //     } catch (error) {
-  //         console.error(error)
-  //     } finally {
-  //         setLoading(false)
-  //     }
-  // }
-  // const handleDelete = () => {
-  //     if(!id) {
-  //         return;
-  //     }
-  //     deletePost(id);
-  // }
+  const handleChange: React.ChangeEventHandler<HTMLInputElement> = async ({
+    target: { value },
+  }) => {
+    console.log({ value });
+    if (loading) {
+      return;
+    }
+    setLoading(true);
+    try {
+      await updatePost({
+        id,
+        created,
+        title,
+        image,
+        description,
+        comments,
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleDelete = () => {
+    if (!id) {
+      return;
+    }
+    //@ts-ignore
+    deletePost(id);
+  };
   return (
     <div>
       <h3>{title}</h3>
-      <p>{id}</p>
+      {/* <p>{created}</p> */}
       <h4>{image}</h4>
       <h4>{description}</h4>
       {/* <h4>{comments}</h4> */}

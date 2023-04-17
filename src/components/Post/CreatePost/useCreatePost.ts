@@ -2,18 +2,31 @@ import { useState } from "react";
 import { usePostStore } from "../../../stores/usePostStore";
 import { v4 as uuidv4 } from "uuid";
 
-interface Props {
-  username: string;
+interface FormInputs {
+  title: string;
+  image?: string;
+  description: string;
+  created: Date;
+  comments: Comment[];
 }
 
 export function useCreatePost() {
-  const [formInput, setFormInput] = useState("");
+  const [formInputs, setFormInputs] = useState<FormInputs>({
+    title: "",
+    image: "",
+    description: "",
+    created: new Date(),
+    comments: [],
+  });
   const [loading, setLoading] = useState(false);
   const { createNewPost } = usePostStore();
   const handleFormChange: React.ChangeEventHandler<HTMLInputElement> = ({
-    target: { value },
+    target: { name, value },
   }) => {
-    setFormInput(value);
+    setFormInputs((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
   const handleSubmit = async () => {
     if (loading) {
@@ -23,14 +36,19 @@ export function useCreatePost() {
       setLoading(true);
       await createNewPost({
         id: uuidv4(),
-        username: "placeholder",
-        time: new Date(),
-        title: formInput,
-        image: formInput,
-        description: formInput,
+        created: formInputs.created,
+        title: formInputs.title,
+        image: formInputs.image,
+        description: formInputs.description,
         comments: [],
       });
-      setFormInput("");
+      setFormInputs({
+        created: new Date(),
+        title: "",
+        image: "",
+        description: "",
+        comments: [],
+      });
     } catch (error) {
       console.log(error);
     } finally {
@@ -41,6 +59,8 @@ export function useCreatePost() {
   return {
     handleSubmit,
     handleFormChange,
-    formInput,
+    formInputs,
+    setFormInputs,
+    loading,
   };
 }

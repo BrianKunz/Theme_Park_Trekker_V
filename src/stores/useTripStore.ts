@@ -3,6 +3,7 @@ import { tripService } from "../services/tripService";
 
 interface TripStore {
   trips: Trip[];
+  user?: CustomSessionData["user"];
   getAllTrips: () => Promise<void>;
   createNewTrip: (trip: Trip) => Promise<void>;
   updateTrip: (trip: Trip) => Promise<void>;
@@ -11,17 +12,23 @@ interface TripStore {
 
 export const useTripStore = create<TripStore>((set, get) => ({
   trips: [],
+  user: undefined,
   getAllTrips: async () => {
     try {
-      const data = await tripService.getAll();
-      // @ts-ignore
+      const { user } = get();
+      const response = await tripService.getAll();
+      const data = response.data;
+      const filteredData = data.filter((trip: Trip) => {
+        return trip.user === user?.id;
+      });
       set((state) => ({
-        trips: data,
+        trips: filteredData,
       }));
     } catch (error) {
       console.error(error);
     }
   },
+
   createNewTrip: async (trip) => {
     try {
       const { getAllTrips } = get();
@@ -31,9 +38,10 @@ export const useTripStore = create<TripStore>((set, get) => ({
       console.error(error);
     }
   },
+
   updateTrip: async (trip) => {
-    const { getAllTrips } = get();
     try {
+      const { getAllTrips } = get();
       //@ts-ignore
       await tripService.update(trip);
       await getAllTrips();
@@ -42,8 +50,8 @@ export const useTripStore = create<TripStore>((set, get) => ({
     }
   },
   deleteTrip: async (id) => {
-    const { getAllTrips } = get();
     try {
+      const { getAllTrips } = get();
       await tripService.delete(String(id));
       await getAllTrips();
     } catch (error) {

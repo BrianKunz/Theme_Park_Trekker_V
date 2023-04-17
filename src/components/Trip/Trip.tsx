@@ -6,7 +6,7 @@ interface Props {
 }
 
 export const Trip: React.FC<Props> = ({
-  trip: { id, username, date, title, start_date, end_date, flight },
+  trip: { id, user, date, title, start_date, end_date, flight },
 }) => {
   const { updateTrip, deleteTrip } = useTripStore();
   const [loading, setLoading] = useState(false);
@@ -21,7 +21,7 @@ export const Trip: React.FC<Props> = ({
     try {
       await updateTrip({
         id,
-        username,
+        user,
         date,
         title,
         start_date,

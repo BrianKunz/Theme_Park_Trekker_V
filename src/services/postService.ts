@@ -4,7 +4,7 @@ class PostService {
   private instance: AxiosInstance;
   constructor() {
     this.instance = axios.create({
-      baseURL: "http://localhost:3000",
+      baseURL: "http://localhost:3001",
     });
     this.instance.interceptors.response.use(this.responseInterceptor);
   }
