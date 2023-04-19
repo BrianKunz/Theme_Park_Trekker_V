@@ -14,9 +14,10 @@ export default function PostList() {
     <div>
       <h1>Post List</h1>
       <CreatePost />
-      {posts.map((post) => {
-        return <Post key={Post.id} post={post} />;
-      })}
+      {posts &&
+        posts.map((post) => {
+          return <Post key={post.id} post={post} />;
+        })}
     </div>
   );
 }

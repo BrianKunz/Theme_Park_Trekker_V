@@ -1,28 +1,37 @@
 import React, { useState } from "react";
 import { useCommentStore } from "../../stores/useCommentStore";
+import CreateComment from "./CreateComment/CreateComment";
 
 interface Props {
   comment: Comment;
+  post: Post;
 }
 
 export const Comment: React.FC<Props> = ({
-  comment: { id, username, time, body, post },
+  comment: { id, time, body },
+  post,
 }) => {
   const { updateComment, deleteComment } = useCommentStore();
   const [loading, setLoading] = useState(false);
+
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = async ({
     target: { value },
   }) => {
     console.log({ value });
-    if (loading) {
+    if (loading || !post) {
       return;
     }
     setLoading(true);
     try {
-      await updateComment({
-        id,
-        body,
-      });
+      await updateComment(
+        {
+          id,
+          time,
+          body,
+          post: post,
+        } as Comment,
+        post
+      );
     } catch (error) {
       console.error(error);
     } finally {
@@ -34,18 +43,14 @@ export const Comment: React.FC<Props> = ({
     if (!id) {
       return;
     }
-    deleteComment(id);
+    deleteComment(id, post);
   };
 
   return (
     <div>
-      <p>{username}</p>
-      <p>{time}</p>
+      <CreateComment post={post} />
+      {/* <p>{time}</p> */}
       <h4>{body}</h4>
-      <div>
-        <input type="text" onChange={handleChange} />
-        <button onClick={handleDelete}>Delete</button>
-      </div>
     </div>
   );
 };

@@ -12,7 +12,8 @@ export const useUserStore = create<UserStore>(() => ({
   createNewUser: async (user) => {
     try {
       console.log(user);
-      await userService.create(user);
+      const response = await userService.create(user);
+      console.log(response);
     } catch (error) {
       console.error(error);
     }

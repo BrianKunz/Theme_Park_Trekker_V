@@ -2,8 +2,7 @@ import React from "react";
 import { useCreatePost } from "./useCreatePost";
 
 export default function CreatePost() {
-  const { formInputs, handleFormChange, handleSubmit, setFormInputs, loading } =
-    useCreatePost();
+  const { formInputs, handleFormChange, handleSubmit } = useCreatePost();
 
   return (
     <form onSubmit={handleSubmit} method="POST">
@@ -30,6 +29,7 @@ export default function CreatePost() {
         onChange={handleFormChange}
         required
       />
+      <button type="submit">Submit</button>
     </form>
   );
 }

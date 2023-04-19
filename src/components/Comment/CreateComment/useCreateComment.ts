@@ -1,15 +1,27 @@
 import { useState } from "react";
 import { useCommentStore } from "../../../stores/useCommentStore";
+import { v4 as uuidv4 } from "uuid";
 
-export function useCreateComment() {
-  const [formInput, setFormInput] = useState("");
+interface FormInputs {
+  time: Date;
+  body: string;
+}
+
+export function useCreateComment(post: Post) {
+  const [formInputs, setFormInputs] = useState<FormInputs>({
+    time: new Date(),
+    body: "",
+  });
   const [loading, setLoading] = useState(false);
   const { createNewComment } = useCommentStore();
 
   const handleFormChange: React.ChangeEventHandler<HTMLInputElement> = ({
-    target: { value },
+    target: { name, value },
   }) => {
-    setFormInput(value);
+    setFormInputs((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async () => {
@@ -18,10 +30,19 @@ export function useCreateComment() {
     }
     try {
       setLoading(true);
-      await createNewComment({
-        body: formInput,
+      await createNewComment(
+        {
+          id: uuidv4(),
+          time: formInputs.time,
+          body: formInputs.body,
+          post: post,
+        } as Comment,
+        post
+      );
+      setFormInputs({
+        time: new Date(),
+        body: "",
       });
-      setFormInput("");
     } catch (error) {
       console.log(error);
     } finally {
@@ -32,6 +53,8 @@ export function useCreateComment() {
   return {
     handleFormChange,
     handleSubmit,
-    formInput,
+    formInputs,
+    setFormInputs,
+    loading,
   };
 }

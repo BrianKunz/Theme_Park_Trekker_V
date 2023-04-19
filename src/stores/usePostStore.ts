@@ -3,26 +3,30 @@ import { postService } from "../services/postService";
 
 interface PostStore {
   posts: Post[];
-  user?: CustomSessionData["user"];
   getAllPosts: () => Promise<void>;
+  getOnePost: (id: string) => Promise<void>;
   createNewPost: (post: Post) => Promise<void>;
   updatePost: (post: Post) => Promise<void>;
-  deletePost: (post: Post) => Promise<void>;
+  deletePost: (id: string) => Promise<void>;
 }
 
 export const usePostStore = create<PostStore>((set, get) => ({
   posts: [],
-  user: undefined,
   getAllPosts: async () => {
     try {
-      const { user } = get();
       const response = await postService.getAll();
-      const data = response.data;
-      const filteredData = data.filter((post: Post) => {
-        return post.user === user?.id;
-      });
       set((state) => ({
-        posts: filteredData,
+        posts: response.data,
+      }));
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  getOnePost: async (id) => {
+    try {
+      const response = await postService.getOne(id);
+      set((state) => ({
+        posts: [response.data],
       }));
     } catch (error) {
       console.error(error);

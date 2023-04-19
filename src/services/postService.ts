@@ -16,7 +16,7 @@ class PostService {
     return await this.instance.get("/posts/");
   }
   async getOne(id: string) {
-    return await this.instance.get(`/trips/${id}`);
+    return await this.instance.get(`/posts/${id}`);
   }
   async create(post: Post) {
     return await this.instance.post("/posts", { ...post });

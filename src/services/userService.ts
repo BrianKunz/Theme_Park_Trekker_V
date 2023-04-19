@@ -13,7 +13,7 @@ class UserService {
   }
 
   async create(user: User) {
-    return await this.instance.post("/", user);
+    return await this.instance.post("/signup", user);
   }
   async login(user: User) {
     return await this.instance.post("/login", user);
