@@ -1,23 +1,21 @@
-import axios, { AxiosInstance, AxiosResponse } from "axios";
+import axios from "axios";
 
-class UserService {
-  private instance: AxiosInstance;
-  constructor() {
-    this.instance = axios.create({
-      baseURL: "http://localhost:3001/users",
-    });
-    this.instance.interceptors.response.use(this.responseInterceptor);
-  }
-  private responseInterceptor({ data }: AxiosResponse<any, any>) {
-    return data;
-  }
+const baseURL = "http://localhost:3001/users/";
 
-  async create(user: User) {
-    return await this.instance.post("/signup", user);
-  }
-  async login(user: User) {
-    return await this.instance.post("/login", user);
-  }
-}
-
-export const userService = new UserService();
+export const userService = {
+  getAll: async (): Promise<User[]> => {
+    const response = await axios.get(baseURL);
+    return response.data;
+  },
+  create: async (user: User): Promise<User> => {
+    const response = await axios.post(`${baseURL}signup`, user);
+    return response.data;
+  },
+  login: async (user: User): Promise<User> => {
+    const response = await axios.post(`${baseURL}login`, user);
+    const token = response.data.token;
+    console.log(token);
+    localStorage.setItem("accessToken", token);
+    return response.data;
+  },
+};

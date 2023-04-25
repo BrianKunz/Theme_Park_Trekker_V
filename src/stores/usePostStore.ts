@@ -3,59 +3,57 @@ import { postService } from "../services/postService";
 
 interface PostStore {
   posts: Post[];
+  user?: CustomSessionData["user"];
+  post?: Post;
   getAllPosts: () => Promise<void>;
-  getOnePost: (id: string) => Promise<void>;
+  getOnePost: (id: string) => Promise<void | Post>;
   createNewPost: (post: Post) => Promise<void>;
   updatePost: (post: Post) => Promise<void>;
   deletePost: (id: string) => Promise<void>;
 }
-
 export const usePostStore = create<PostStore>((set, get) => ({
   posts: [],
   getAllPosts: async () => {
     try {
-      const response = await postService.getAll();
-      set((state) => ({
-        posts: response.data,
-      }));
+      const posts = await postService.getAll();
+      set({ posts });
     } catch (error) {
       console.error(error);
     }
   },
   getOnePost: async (id) => {
     try {
-      const response = await postService.getOne(id);
-      set((state) => ({
-        posts: [response.data],
-      }));
+      const post = await postService.getOne(id);
+      set({ post });
+      return post;
     } catch (error) {
       console.error(error);
     }
   },
   createNewPost: async (post) => {
     try {
-      const { getAllPosts } = get();
-      await postService.create(post);
-      await getAllPosts();
+      const { getAllPosts, user } = get();
+      if (user) {
+        await postService.create({ ...post, user });
+        await getAllPosts();
+      }
     } catch (error) {
       console.error(error);
     }
   },
+
   updatePost: async (post) => {
     try {
-      const { getAllPosts } = get();
-      //@ts-ignore
-      await postService.update(post);
-      await getAllPosts();
+      await postService.update(post.id!, post);
+      await get().getAllPosts();
     } catch (error) {
       console.error(error);
     }
   },
   deletePost: async (id) => {
-    const { getAllPosts } = get();
     try {
-      await postService.delete(String(id));
-      await getAllPosts();
+      await postService.delete(id);
+      await get().getAllPosts();
     } catch (error) {
       console.error(error);
     }

@@ -1,32 +1,55 @@
-import axios, { AxiosInstance, AxiosResponse } from "axios";
+import axios from "axios";
 
-class TripService {
-  private instance: AxiosInstance;
-  constructor() {
-    this.instance = axios.create({
-      baseURL: "http://localhost:3001",
+const baseURL = "http://localhost:3001/trips/";
+
+export const tripService = {
+  getAll: async (): Promise<Trip[]> => {
+    const token = localStorage.getItem("accessToken");
+    console.log(token); // Log the token to the console
+    const response = await axios.get(baseURL, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
-    this.instance.interceptors.response.use(this.responseInterceptor);
-  }
-  private responseInterceptor({ data }: AxiosResponse<any, any>) {
-    return data;
-  }
+    return response.data;
+  },
 
-  async getAll() {
-    return await this.instance.get("/trips/");
-  }
-  async getOne(id: string) {
-    return await this.instance.get(`/trips/${id}`);
-  }
-  async create(trip: Trip) {
-    return await this.instance.post("/trips", { ...trip });
-  }
-  async update(id: string, trip: Trip) {
-    return await this.instance.put(`/trips/${id}`, { ...trip });
-  }
-  async delete(id: string) {
-    return await this.instance.delete(`/trips/${id}`);
-  }
-}
+  getOne: async (id: string): Promise<Trip> => {
+    const token = localStorage.getItem("accessToken");
+    const response = await axios.get(baseURL + id, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  },
 
-export const tripService = new TripService();
+  create: async (trip: Trip): Promise<Trip> => {
+    const token = localStorage.getItem("accessToken");
+    const response = await axios.post(baseURL, trip, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  },
+
+  update: async (id: string, trip: Trip): Promise<Trip> => {
+    const token = localStorage.getItem("accessToken");
+    const response = await axios.put(baseURL + id, trip, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  },
+
+  delete: async (id: string): Promise<void> => {
+    const token = localStorage.getItem("accessToken");
+    await axios.delete(baseURL + id, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
+};

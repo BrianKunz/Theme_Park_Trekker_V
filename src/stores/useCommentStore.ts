@@ -12,49 +12,46 @@ interface CommentStore {
 
 export const useCommentStore = create<CommentStore>((set, get) => ({
   comments: [],
-  user: undefined,
-  getAllComments: async (post: Post) => {
+  getAllComments: async (post) => {
     try {
-      const response = await commentService.getAll();
-      const data = response.data;
-      const filteredData = data.filter((comment: Comment) => {
+      const comments = await commentService.getAll();
+      const filteredComments = comments.filter((comment: Comment) => {
         //@ts-ignore
         return comment.post === post?.id; // Use type guard to check if post is undefined
       });
-      set((state) => ({
-        comments: filteredData,
-      }));
+      set({ comments: filteredComments });
     } catch (error) {
       console.error(error);
     }
   },
-
   createNewComment: async (comment, post) => {
     try {
       const { getAllComments } = get();
-      await commentService.create({ ...comment, post: {} as Post });
+      const { user } = get();
+      await commentService.create({
+        ...comment,
+        user,
+        post,
+      });
       await getAllComments(post);
     } catch (error) {
       console.error(error);
     }
   },
   updateComment: async (comment, post) => {
-    const { getAllComments } = get();
     try {
-      //@ts-ignore
-      await commentService.update(comment);
+      const { getAllComments } = get();
+      await commentService.update(comment.id!, comment);
       await getAllComments(post);
     } catch (error) {
       console.error(error);
     }
   },
   deleteComment: async (id, post) => {
-    const { getAllComments } = get();
     try {
-      await commentService.delete(String(id));
-      if (post.id) {
-        await getAllComments(post);
-      }
+      const { getAllComments } = get();
+      await commentService.delete(id);
+      await getAllComments(post);
     } catch (error) {
       console.error(error);
     }

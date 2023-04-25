@@ -3,11 +3,12 @@ import { tripService } from "../services/tripService";
 
 interface TripStore {
   trips: Trip[];
-  user?: CustomSessionData["user"];
+  user: CustomSessionData["user"];
   getAllTrips: () => Promise<void>;
+  getOneTrip: (id: string) => Promise<void>;
   createNewTrip: (trip: Trip) => Promise<void>;
   updateTrip: (trip: Trip) => Promise<void>;
-  deleteTrip: (trip: Trip) => Promise<void>;
+  deleteTrip: (id: string) => Promise<void>;
 }
 
 export const useTripStore = create<TripStore>((set, get) => ({
@@ -16,44 +17,45 @@ export const useTripStore = create<TripStore>((set, get) => ({
   getAllTrips: async () => {
     try {
       const { user } = get();
-      const response = await tripService.getAll();
-      const data = response.data;
-      const filteredData = data.filter((trip: Trip) => {
-        return trip.user === user?.id;
-      });
-      set((state) => ({
-        trips: filteredData,
-      }));
+      console.log(user);
+      const trips = await tripService.getAll();
+      const filteredTrips = trips.filter(
+        (trip: Trip) => trip.user === user?.id
+      );
+      set({ trips: filteredTrips });
     } catch (error) {
       console.error(error);
     }
   },
-
+  getOneTrip: async (id) => {
+    try {
+      const trip = await tripService.getOne(id);
+      set({ trips: [trip] });
+    } catch (error) {
+      console.error(error);
+    }
+  },
   createNewTrip: async (trip) => {
     try {
-      const { getAllTrips } = get();
-      await tripService.create(trip);
+      const { getAllTrips, user } = get();
+      await tripService.create({ ...trip, user });
       await getAllTrips();
     } catch (error) {
       console.error(error);
     }
   },
-
   updateTrip: async (trip) => {
     try {
-      const { getAllTrips } = get();
-      //@ts-ignore
-      await tripService.update(trip);
-      await getAllTrips();
+      await tripService.update(trip.id!, trip);
+      await get().getAllTrips();
     } catch (error) {
       console.error(error);
     }
   },
   deleteTrip: async (id) => {
     try {
-      const { getAllTrips } = get();
-      await tripService.delete(String(id));
-      await getAllTrips();
+      await tripService.delete(id);
+      await get().getAllTrips();
     } catch (error) {
       console.error(error);
     }

@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { useTripStore } from "../../stores/useTripStore";
 
-interface Props {
+export interface TripProps {
+  key?: string;
   trip: Trip;
+  user?: User;
 }
 
-export const Trip: React.FC<Props> = ({
-  trip: { id, user, date, title, start_date, end_date, flight },
+export const Trip: React.FC<TripProps> = ({
+  trip: { id, date, title, start_date, end_date, flight },
+  user,
 }) => {
   const { updateTrip, deleteTrip } = useTripStore();
   const [loading, setLoading] = useState(false);

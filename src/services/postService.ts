@@ -1,32 +1,29 @@
-import axios, { AxiosInstance, AxiosResponse } from "axios";
+import axios from "axios";
 
-class PostService {
-  private instance: AxiosInstance;
-  constructor() {
-    this.instance = axios.create({
-      baseURL: "http://localhost:3001",
-    });
-    this.instance.interceptors.response.use(this.responseInterceptor);
-  }
-  private responseInterceptor({ data }: AxiosResponse<any, any>) {
-    return data;
-  }
+const baseURL = "http://localhost:3001/posts/";
 
-  async getAll() {
-    return await this.instance.get("/posts/");
-  }
-  async getOne(id: string) {
-    return await this.instance.get(`/posts/${id}`);
-  }
-  async create(post: Post) {
-    return await this.instance.post("/posts", { ...post });
-  }
-  async update(id: string, post: Post) {
-    return await this.instance.put(`/posts/${id}`, { ...post });
-  }
-  async delete(id: string) {
-    return await this.instance.delete(`/posts/${id}`);
-  }
-}
+export const postService = {
+  getAll: async (): Promise<Post[]> => {
+    const response = await axios.get(baseURL);
+    return response.data;
+  },
 
-export const postService = new PostService();
+  getOne: async (id: string): Promise<Post> => {
+    const response = await axios.get(baseURL + id);
+    return response.data;
+  },
+
+  create: async (post: Post): Promise<Post> => {
+    const response = await axios.post(baseURL, post);
+    return response.data;
+  },
+
+  update: async (id: string, post: Post): Promise<Post> => {
+    const response = await axios.put(baseURL + id, post);
+    return response.data;
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await axios.delete(baseURL + id);
+  },
+};

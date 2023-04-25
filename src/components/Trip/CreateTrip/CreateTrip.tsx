@@ -44,6 +44,7 @@ export default function CreateTrip() {
         value={formInputs.flight}
         onChange={handleFormChange}
       />
+      <button type="submit">Submit</button>
     </form>
   );
 }

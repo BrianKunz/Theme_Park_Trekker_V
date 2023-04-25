@@ -1,69 +1,41 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { usePostStore } from "../../stores/usePostStore";
-import { Comment } from "../Comment/Comment";
+import NavBar from "../NavBar/NavBar";
 
-interface Props {
-  post: Post;
-}
+interface Props {}
 
-export const Post: React.FC<Props> = ({
-  post: { id, title, image, description, created, comments },
-}) => {
-  const { updatePost, deletePost } = usePostStore();
-  const [loading, setLoading] = useState(false);
-
-  const { posts, getOnePost } = usePostStore();
+const Post: React.FC<Props> = () => {
+  const { id = "" } = useParams();
+  const { getOnePost, post } = usePostStore();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (id) {
-      getOnePost(id);
-    }
-  }, [id, getOnePost]);
-
-  const handleChange: React.ChangeEventHandler<HTMLInputElement> = async ({
-    target: { value },
-  }) => {
-    console.log({ value });
-    if (loading) {
-      return;
-    }
-    setLoading(true);
-    try {
-      await updatePost({
-        id,
-        created,
-        title,
-        image,
-        description,
-        comments,
-      });
-    } catch (error) {
-      console.error(error);
-    } finally {
+    async function fetchPost() {
+      await getOnePost(id);
       setLoading(false);
     }
-  };
 
-  const handleDelete = () => {
-    if (!id) {
-      return;
-    }
-    //@ts-ignore
-    deletePost(id);
-  };
+    fetchPost();
+  }, [getOnePost, id]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!post) {
+    return <div>No post found</div>;
+  }
 
   return (
     <div>
-      <h2>{title}</h2>
-      <p>{description}</p>
-      {/* <p>{created}</p> */}
-      {comments.map((comment) => (
-        <Comment
-          key={comment.id}
-          comment={comment}
-          post={{ id, title, image, description, created, comments }}
-        />
-      ))}
+      <NavBar />
+      <h1>{post.title}</h1>
+      <img src={post.image} />
+      {/* <p>{post.created}</p> */}
+      <p>{post.description}</p>
     </div>
   );
 };
+
+export default Post;
